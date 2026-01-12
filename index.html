@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>My S3 Website</title>
+  <title>My Updated S3 Website</title>
 
   <style>
     body {
       margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(135deg, #1e3c72, #2a5298);
-      color: red;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+      color: #ffffff;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -18,39 +18,61 @@
       text-align: center;
     }
 
-    .container {
-      background: rgba(0, 0, 0, 0.3);
-      padding: 40px;
-      border-radius: 10px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    .card {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 50px;
+      border-radius: 16px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      animation: fadeIn 1.5s ease-in-out;
     }
 
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 3rem;
+      margin-bottom: 15px;
+      color: #00e5ff;
     }
 
     p {
-      font-size: 1.1rem;
-      opacity: 0.9;
+      font-size: 1.2rem;
+      line-height: 1.6;
     }
 
-    footer {
+    .badge {
+      display: inline-block;
       margin-top: 20px;
+      padding: 10px 18px;
+      background: #00e5ff;
+      color: #00323a;
+      border-radius: 30px;
+      font-weight: bold;
       font-size: 0.9rem;
-      opacity: 0.8;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1>🚀 Welcome to My S3 Website</h1>
-    <p>Your static website is successfully hosted on Amazon S3.</p>
-    <footer>
-      <p>Powered by AWS S3</p>
-    </footer>
+  <div class="card">
+    <h1>✨ S3 Website Updated!</h1>
+    <p>
+      Your static site is live on <strong>Amazon S3</strong><br />
+      and this page confirms the deployment worked 🎉
+    </p>
+    <div class="badge">Deployed Successfully</div>
   </div>
 </body>
 </html>
+
+
 
