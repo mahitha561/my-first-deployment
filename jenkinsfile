@@ -1,0 +1,52 @@
+pipeline {
+    agent any
+
+    triggers {
+        githubPush()
+    }
+
+    environment {
+        APP_NAME = "my-app"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build') {
+            steps {
+                echo "Building ${APP_NAME}"
+                sh 'npm install'      // change to mvn, gradle, etc. if needed
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo "Running tests"
+                sh 'npm test'
+            }
+        }
+
+        stage('Deploy') {
+            when {
+                branch 'main'
+            }
+            steps {
+                echo "Deploying ${APP_NAME}"
+                // sh './deploy.sh'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Build succeeded ✅'
+        }
+        failure {
+            echo 'Build failed ❌'
+        }
+    }
+}
