@@ -6,7 +6,7 @@ pipeline {
         AWS_ACCOUNT_ID = "871700844971"
         ECR_REPO = "user-service"
         IMAGE_TAG = "${BUILD_NUMBER}"
-        ECR_URI = "$871700844971.dkr.ecr.$us-east-2.amazonaws.com/${ECR_REPO}"
+        ECR_URI = "871700844971.dkr.ecr.us-east-2.amazonaws.com/${ECR_REPO}"
         KUBE_CONFIG = credentials('eks-kubeconfig')
     }
 
@@ -30,8 +30,8 @@ pipeline {
         stage('Login to ECR') {
             steps {
                 sh """
-                aws ecr get-login-password --region $us-east-2 \
-                | docker login --username AWS --password-stdin ${871700844971}.dkr.ecr.$us-east-2.amazonaws.com
+                aws ecr get-login-password --region us-east-2 \
+                | docker login --username AWS --password-stdin 871700844971.dkr.ecr.us-east-2.amazonaws.com
                 """
             }
         }
