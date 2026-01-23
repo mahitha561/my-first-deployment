@@ -1,52 +1,69 @@
 pipeline {
     agent any
 
-    triggers {
-        githubPush()
-    }
-
     environment {
-        APP_NAME = "my-app"
+        AWS_REGION = "us-east-2"
+        AWS_ACCOUNT_ID = "871700844971"
+        ECR_REPO = "user-service"
+        IMAGE_TAG = "${BUILD_NUMBER}"
+        ECR_URI = "$871700844971.dkr.ecr.$us-east-2.amazonaws.com/${ECR_REPO}"
+        KUBE_CONFIG = credentials('eks-kubeconfig')
     }
 
     stages {
-        stage('Checkout') {
+
+        stage('Checkout Code') {
             steps {
-                checkout scm
+                git branch: 'main',
+                    url: 'https://github.com/mahitha561/my-first-deployment.git'
             }
         }
 
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                echo "Building ${APP_NAME}"
-                sh 'npm install'      // change to mvn, gradle, etc. if needed
+                sh """
+                docker build -t ${ECR_REPO}:${IMAGE_TAG} .
+                """
             }
         }
 
-        stage('Test') {
+        stage('Login to ECR') {
             steps {
-                echo "Running tests"
-                sh 'npm test'
+                sh """
+                aws ecr get-login-password --region $us-east-2 \
+                | docker login --username AWS --password-stdin ${871700844971}.dkr.ecr.$us-east-2.amazonaws.com
+                """
             }
         }
 
-        stage('Deploy') {
-            when {
-                branch 'main'
-            }
+        stage('Push Image to ECR') {
             steps {
-                echo "Deploying ${APP_NAME}"
-                // sh './deploy.sh'
+                sh """
+                docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_URI}:${IMAGE_TAG}
+                docker tag ${ECR_REPO}:${IMAGE_TAG} ${ECR_URI}:latest
+                docker push ${ECR_URI}:${IMAGE_TAG}
+                docker push ${ECR_URI}:latest
+                """
+            }
+        }
+
+        stage('Deploy to EKS') {
+            steps {
+                sh """
+                export KUBECONFIG=${KUBE_CONFIG}
+                kubectl apply -f k8s/deployment.yaml
+                kubectl apply -f k8s/service.yaml
+                """
             }
         }
     }
 
     post {
         success {
-            echo 'Build succeeded ✅'
+            echo "Deployment successful 🚀"
         }
         failure {
-            echo 'Build failed ❌'
+            echo "Deployment failed ❌"
         }
     }
 }
