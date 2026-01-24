@@ -4,9 +4,11 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main',
+                git(
+                    branch: 'main',
                     url: 'https://github.com/mahitha561/my-first-deployment.git',
                     credentialsId: 'github-creds'
+                )
             }
         }
 
