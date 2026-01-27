@@ -1,9 +1,15 @@
 pipeline {
     agent any
+
     stages {
-        stage('Test') {
+        stage('Deploy to EC2') {
             steps {
-                echo 'Jenkins pipeline is working!'
+                sshagent(credentials: ['ec2-ssh']) {
+                    sh '''
+                      ssh -o StrictHostKeyChecking=no ubuntu@<TARGET_EC2_PUBLIC_IP> \
+                      "hostname && docker ps"
+                    '''
+                }
             }
         }
     }
